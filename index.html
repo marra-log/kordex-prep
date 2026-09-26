@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kordex Prep — protótipo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">K</span>
+        <div>
+          <strong>Kordex Prep</strong>
+          <small>Protótipo de validação · zero custo de servidor</small>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="btnExport" class="ghost" disabled>Exportar CSV</button>
+        <button id="btnReset" class="ghost" disabled>Limpar</button>
+      </div>
+    </header>
+
+    <section class="hero" id="dropzone">
+      <div class="hero-copy">
+        <p class="eyebrow">Validação sem GPU na nuvem</p>
+        <h1>Sobe o lote. A IA faz o primeiro corte.</h1>
+        <p>Roda no navegador: nitidez, exposição, ruído e fotos repetidas. Você decide o que publica.</p>
+        <div class="cta-row">
+          <label class="btn primary">
+            Selecionar fotos
+            <input id="fileInput" type="file" accept="image/*" multiple hidden />
+          </label>
+          <span class="hint">JPG/PNG · 50 a 500 fotos · nada sai do computador</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats hidden" id="stats">
+      <div class="stat">
+        <span class="label">Analisadas</span>
+        <strong id="statTotal">0</strong>
+      </div>
+      <div class="stat keep">
+        <span class="label">Manter</span>
+        <strong id="statKeep">0</strong>
+      </div>
+      <div class="stat review">
+        <span class="label">Revisar</span>
+        <strong id="statReview">0</strong>
+      </div>
+      <div class="stat drop">
+        <span class="label">Descartar</span>
+        <strong id="statDrop">0</strong>
+      </div>
+      <div class="stat">
+        <span class="label">Redução</span>
+        <strong id="statCut">0%</strong>
+      </div>
+    </section>
+
+    <section class="toolbar hidden" id="toolbar">
+      <div class="filters" id="filters">
+        <button data-filter="all" class="chip on">Todas</button>
+        <button data-filter="keep" class="chip">Manter</button>
+        <button data-filter="review" class="chip">Revisar</button>
+        <button data-filter="drop" class="chip">Descartar</button>
+        <button data-filter="dup" class="chip">Repetidas</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress" id="progress"><i></i></div>
+        <span id="progressText">Aguardando</span>
+      </div>
+    </section>
+
+    <section class="grid hidden" id="grid"></section>
+
+    <aside class="drawer hidden" id="drawer">
+      <button class="close" id="closeDrawer">×</button>
+      <div class="compare">
+        <div class="pane">
+          <span>Original</span>
+          <img id="imgOrig" alt="original" />
+        </div>
+        <div class="pane">
+          <span>Enhance local</span>
+          <img id="imgFix" alt="corrigida" />
+        </div>
+      </div>
+      <div class="meta" id="meta"></div>
+      <div class="drawer-actions">
+        <button class="btn keep" data-set="keep">Manter</button>
+        <button class="btn review" data-set="review">Revisar</button>
+        <button class="btn drop" data-set="drop">Descartar</button>
+      </div>
+    </aside>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
