@@ -4,7 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kordex Prep — protótipo</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+:root {
+  --bg: #0b0c10;
+  --panel: #14161c;
+  --line: #262a33;
+  --text: #eef1f6;
+  --muted: #9aa3b2;
+  --keep: #3dd68c;
+  --review: #f5c84c;
+  --drop: #ff6b6b;
+  --accent: #7aa2ff;
+  --radius: 16px;
+  font-family: "Segoe UI", Inter, system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+button, input { font: inherit; }
+.app { max-width: 1280px; margin: 0 auto; padding: 20px 24px 80px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.brand { display: flex; gap: 12px; align-items: center; }
+.mark { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #7aa2ff, #3dd68c); color: #081018; display: grid; place-items: center; font-weight: 800; }
+.brand small { display: block; color: var(--muted); font-size: 12px; }
+.top-actions { display: flex; gap: 8px; }
+.ghost, .chip, .btn { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+.ghost:disabled { opacity: .4; cursor: default; }
+.btn.primary { background: var(--text); color: #0b0c10; border: 0; font-weight: 650; padding: 12px 18px; }
+.hero { border: 1px dashed #3a4150; border-radius: 24px; padding: 48px 32px; background: radial-gradient(800px 240px at 20% 0%, #1a2744 0%, transparent 60%), var(--panel); }
+.hero.hot { border-color: var(--accent); }
+.eyebrow { color: var(--accent); letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+.hero h1 { margin: 8px 0 10px; font-size: 34px; line-height: 1.15; max-width: 16ch; }
+.hero p { color: var(--muted); max-width: 52ch; }
+.cta-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 22px; }
+.hint { color: var(--muted); font-size: 13px; }
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 20px 0; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.stat .label { color: var(--muted); font-size: 12px; }
+.stat strong { display: block; font-size: 26px; margin-top: 4px; }
+.stat.keep strong { color: var(--keep); }
+.stat.review strong { color: var(--review); }
+.stat.drop strong { color: var(--drop); }
+.toolbar { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin: 8px 0 16px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip.on { background: #1e2430; border-color: var(--accent); color: #dbe6ff; }
+.progress-wrap { min-width: 220px; }
+.progress { height: 6px; background: #22262f; border-radius: 99px; overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); }
+#progressText { color: var(--muted); font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; cursor: pointer; }
+.card img { width: 100%; height: 160px; object-fit: cover; display: block; background: #0e1015; }
+.card .body { padding: 10px 12px 12px; }
+.card .name { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.score { font-size: 22px; font-weight: 700; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tag { font-size: 10px; padding: 3px 7px; border-radius: 99px; background: #1c2028; color: var(--muted); }
+.badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; }
+.badge.keep { background: #123526; color: var(--keep); }
+.badge.review { background: #3a2f10; color: var(--review); }
+.badge.drop { background: #3a1414; color: var(--drop); }
+.drawer { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(720px, 92vw); background: #10131a; border: 1px solid var(--line); border-radius: 20px; padding: 20px; overflow: auto; box-shadow: 0 20px 80px #000a; z-index: 20; }
+.close { position: absolute; right: 12px; top: 10px; border: 0; background: transparent; color: var(--text); font-size: 28px; cursor: pointer; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
+.pane span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+.pane img { width: 100%; border-radius: 12px; background: #000; }
+.meta { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: var(--muted); font-size: 13px; }
+.drawer-actions { display: flex; gap: 8px; margin-top: 18px; }
+.btn.keep { border-color: #245c40; }
+.btn.review { border-color: #6a5718; }
+.btn.drop { border-color: #6a2a2a; }
+.hidden { display: none !important; }
+@media (max-width: 800px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .compare { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 26px; }
+  .hero { padding: 28px 18px; }
+  .topbar { flex-wrap: wrap; gap: 10px; }
+}
+  </style>
 </head>
 <body>
   <div class="app">
@@ -21,7 +98,6 @@
         <button id="btnReset" class="ghost" disabled>Limpar</button>
       </div>
     </header>
-
     <section class="hero" id="dropzone">
       <div class="hero-copy">
         <p class="eyebrow">Validação sem GPU na nuvem</p>
@@ -32,34 +108,17 @@
             Selecionar fotos
             <input id="fileInput" type="file" accept="image/*" multiple hidden />
           </label>
-          <span class="hint">JPG/PNG · 50 a 500 fotos · nada sai do computador</span>
+          <span class="hint">No celular: galeria do aparelho. Fotos não saem do dispositivo.</span>
         </div>
       </div>
     </section>
-
     <section class="stats hidden" id="stats">
-      <div class="stat">
-        <span class="label">Analisadas</span>
-        <strong id="statTotal">0</strong>
-      </div>
-      <div class="stat keep">
-        <span class="label">Manter</span>
-        <strong id="statKeep">0</strong>
-      </div>
-      <div class="stat review">
-        <span class="label">Revisar</span>
-        <strong id="statReview">0</strong>
-      </div>
-      <div class="stat drop">
-        <span class="label">Descartar</span>
-        <strong id="statDrop">0</strong>
-      </div>
-      <div class="stat">
-        <span class="label">Redução</span>
-        <strong id="statCut">0%</strong>
-      </div>
+      <div class="stat"><span class="label">Analisadas</span><strong id="statTotal">0</strong></div>
+      <div class="stat keep"><span class="label">Manter</span><strong id="statKeep">0</strong></div>
+      <div class="stat review"><span class="label">Revisar</span><strong id="statReview">0</strong></div>
+      <div class="stat drop"><span class="label">Descartar</span><strong id="statDrop">0</strong></div>
+      <div class="stat"><span class="label">Redução</span><strong id="statCut">0%</strong></div>
     </section>
-
     <section class="toolbar hidden" id="toolbar">
       <div class="filters" id="filters">
         <button data-filter="all" class="chip on">Todas</button>
@@ -73,20 +132,12 @@
         <span id="progressText">Aguardando</span>
       </div>
     </section>
-
     <section class="grid hidden" id="grid"></section>
-
     <aside class="drawer hidden" id="drawer">
       <button class="close" id="closeDrawer">×</button>
       <div class="compare">
-        <div class="pane">
-          <span>Original</span>
-          <img id="imgOrig" alt="original" />
-        </div>
-        <div class="pane">
-          <span>Enhance local</span>
-          <img id="imgFix" alt="corrigida" />
-        </div>
+        <div class="pane"><span>Original</span><img id="imgOrig" alt="original" /></div>
+        <div class="pane"><span>Enhance local</span><img id="imgFix" alt="corrigida" /></div>
       </div>
       <div class="meta" id="meta"></div>
       <div class="drawer-actions">
@@ -96,6 +147,206 @@
       </div>
     </aside>
   </div>
-  <script src="app.js"></script>
+<script>
+const state = { items: [], filter: "all", current: null, busy: false };
+const el = (id) => document.getElementById(id);
+const dropzone = el("dropzone");
+const fileInput = el("fileInput");
+const grid = el("grid");
+dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("hot"); });
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("hot"));
+dropzone.addEventListener("drop", (e) => { e.preventDefault(); dropzone.classList.remove("hot"); ingest(e.dataTransfer.files); });
+fileInput.addEventListener("change", () => ingest(fileInput.files));
+el("filters").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-filter]");
+  if (!btn) return;
+  state.filter = btn.dataset.filter;
+  [...el("filters").children].forEach((b) => b.classList.toggle("on", b === btn));
+  renderGrid();
+});
+el("btnReset").addEventListener("click", reset);
+el("btnExport").addEventListener("click", exportCsv);
+el("closeDrawer").addEventListener("click", () => el("drawer").classList.add("hidden"));
+document.querySelector(".drawer-actions").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-set]");
+  if (!btn || state.current == null) return;
+  state.items[state.current].decision = btn.dataset.set;
+  updateStats(); renderGrid(); el("drawer").classList.add("hidden");
+});
+function reset() {
+  state.items.forEach((it) => URL.revokeObjectURL(it.url));
+  state.items = []; state.current = null; fileInput.value = ""; grid.innerHTML = "";
+  el("stats").classList.add("hidden"); el("toolbar").classList.add("hidden"); el("grid").classList.add("hidden"); el("drawer").classList.add("hidden");
+  el("btnExport").disabled = true; el("btnReset").disabled = true; updateProgress(0, "Aguardando");
+}
+async function ingest(fileList) {
+  const files = [...fileList].filter((f) => f.type.startsWith("image/"));
+  if (!files.length || state.busy) return;
+  state.busy = true;
+  el("stats").classList.remove("hidden"); el("toolbar").classList.remove("hidden"); el("grid").classList.remove("hidden");
+  el("btnReset").disabled = false;
+  for (let i = 0; i < files.length; i++) {
+    updateProgress((i / files.length) * 100, `Analisando ${i + 1}/${files.length}`);
+    try {
+      const item = await analyzeFile(files[i]);
+      state.items.push(item);
+      if (i % 4 === 0 || i === files.length - 1) { markDuplicates(); decideAll(); updateStats(); renderGrid(); }
+    } catch (err) { console.warn(files[i].name, err); }
+    await new Promise((r) => setTimeout(r, 0));
+  }
+  markDuplicates(); decideAll(); updateStats(); renderGrid();
+  updateProgress(100, `${state.items.length} fotos prontas`);
+  el("btnExport").disabled = state.items.length === 0;
+  state.busy = false;
+}
+function updateProgress(pct, text) {
+  el("progress").firstElementChild.style.width = `${pct}%`;
+  el("progressText").textContent = text;
+}
+async function analyzeFile(file) {
+  const url = URL.createObjectURL(file);
+  const img = await loadImage(url);
+  return { name: file.name, size: file.size, url, width: img.naturalWidth, height: img.naturalHeight, ...measure(img), duplicateOf: null, decision: "review" };
+}
+function loadImage(src) {
+  return new Promise((resolve, reject) => { const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = src; });
+}
+function measure(img) {
+  const max = 320;
+  const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(16, Math.round(img.naturalWidth * scale));
+  const h = Math.max(16, Math.round(img.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0, w, h);
+  const { data } = ctx.getImageData(0, 0, w, h);
+  let sum = 0, sumSq = 0, dark = 0, bright = 0, lapSum = 0, lapSq = 0, noise = 0;
+  const gray = new Float32Array(w * h);
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const g = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    gray[p] = g; sum += g; sumSq += g * g;
+    if (g < 18) dark++; if (g > 242) bright++;
+  }
+  const n = w * h; const mean = sum / n; const contrast = Math.sqrt(Math.max(0, sumSq / n - mean * mean));
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const lap = gray[i - 1] + gray[i + 1] + gray[i - w] + gray[i + w] - 4 * gray[i];
+      lapSum += lap; lapSq += lap * lap;
+      noise += Math.abs(gray[i] - gray[i - 1]) + Math.abs(gray[i] - gray[i - w]);
+    }
+  }
+  const inner = (w - 2) * (h - 2);
+  const lapMean = lapSum / inner;
+  const sharpness = Math.sqrt(Math.max(0, lapSq / inner - lapMean * lapMean));
+  const grain = noise / inner;
+  const shadowClip = dark / n; const highlightClip = bright / n;
+  let exposureScore = 100;
+  if (mean < 55) exposureScore -= (55 - mean) * 0.7;
+  if (mean > 200) exposureScore -= (mean - 200) * 0.8;
+  exposureScore -= highlightClip * 180; exposureScore -= shadowClip * 90;
+  exposureScore = clamp(exposureScore, 0, 100);
+  const sharpScore = clamp((sharpness / 28) * 100, 0, 100);
+  const noisePenalty = clamp((grain - 12) * 3, 0, 40);
+  const tech = clamp(sharpScore * 0.45 + exposureScore * 0.4 + (100 - noisePenalty) * 0.15, 0, 100);
+  const flags = [];
+  if (sharpScore < 38) flags.push("desfocada");
+  if (highlightClip > 0.08) flags.push("estourada");
+  if (shadowClip > 0.22 && mean < 70) flags.push("subexposta");
+  if (grain > 28 && sharpScore < 70) flags.push("granulada");
+  if (contrast < 28) flags.push("chapada");
+  return { mean: round(mean), contrast: round(contrast), sharpness: round(sharpness), grain: round(grain), highlightClip: round(highlightClip * 100), shadowClip: round(shadowClip * 100), sharpScore: Math.round(sharpScore), exposureScore: Math.round(exposureScore), tech: Math.round(tech), flags, hash: dHash(gray, w, h) };
+}
+function dHash(gray, w, h) {
+  const s = 9; let bits = "";
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const a = gray[Math.floor((y / 8) * h) * w + Math.floor((x / s) * w)];
+      const b = gray[Math.floor((y / 8) * h) * w + Math.floor(((x + 1) / s) * w)];
+      bits += a < b ? "1" : "0";
+    }
+  }
+  return bits;
+}
+function hamming(a, b) { let d = 0; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++; return d; }
+function markDuplicates() {
+  const items = state.items;
+  items.forEach((it) => (it.duplicateOf = null));
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].duplicateOf) continue;
+    for (let j = i + 1; j < items.length; j++) {
+      if (items[j].duplicateOf) continue;
+      if (hamming(items[i].hash, items[j].hash) <= 8) {
+        const loser = items[i].tech >= items[j].tech ? items[j] : items[i];
+        const winner = loser === items[i] ? items[j] : items[i];
+        loser.duplicateOf = winner.name;
+        if (!loser.flags.includes("repetida")) loser.flags.push("repetida");
+      }
+    }
+  }
+}
+function decideAll() {
+  for (const it of state.items) {
+    if (it.duplicateOf || it.tech < 42 || (it.flags.includes("desfocada") && it.sharpScore < 30)) it.decision = "drop";
+    else if (it.tech >= 72 && it.flags.length === 0) it.decision = "keep";
+    else it.decision = "review";
+  }
+}
+function updateStats() {
+  const total = state.items.length;
+  const keep = state.items.filter((i) => i.decision === "keep").length;
+  const review = state.items.filter((i) => i.decision === "review").length;
+  const drop = state.items.filter((i) => i.decision === "drop").length;
+  el("statTotal").textContent = total; el("statKeep").textContent = keep; el("statReview").textContent = review; el("statDrop").textContent = drop;
+  el("statCut").textContent = total ? `${Math.round((drop / total) * 100)}%` : "0%";
+}
+function renderGrid() {
+  const list = state.items.filter((it) => state.filter === "all" ? true : state.filter === "dup" ? Boolean(it.duplicateOf) : it.decision === state.filter);
+  grid.innerHTML = list.map((it) => {
+    const idx = state.items.indexOf(it);
+    return `<article class="card" data-idx="${idx}"><img src="${it.url}" alt="${escapeHtml(it.name)}" /><div class="body"><span class="badge ${it.decision}">${label(it.decision)}</span><div class="score">${it.tech}</div><div class="name">${escapeHtml(it.name)}</div><div class="tags">${it.flags.map((f) => `<span class="tag">${f}</span>`).join("")}</div></div></article>`;
+  }).join("");
+  [...grid.querySelectorAll(".card")].forEach((card) => card.addEventListener("click", () => openDrawer(Number(card.dataset.idx))));
+}
+function label(d) { return { keep: "Manter", review: "Revisar", drop: "Descartar" }[d]; }
+async function openDrawer(idx) {
+  state.current = idx; const it = state.items[idx];
+  el("imgOrig").src = it.url; el("imgFix").src = await enhancePreview(it.url);
+  el("meta").innerHTML = `<div>Arquivo<br><b>${escapeHtml(it.name)}</b></div><div>Score técnico<br><b>${it.tech}/100</b></div><div>Nitidez ${it.sharpScore} · Exposição ${it.exposureScore}</div><div>Estouro ${it.highlightClip}% · Sombra ${it.shadowClip}%</div><div>Tamanho ${it.width}×${it.height}</div><div>${it.duplicateOf ? "Repetida de " + escapeHtml(it.duplicateOf) : "Única no lote"}</div>`;
+  el("drawer").classList.remove("hidden");
+}
+async function enhancePreview(src) {
+  const img = await loadImage(src);
+  const max = 900; const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.round(img.naturalWidth * scale); const h = Math.round(img.naturalHeight * scale);
+  const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true }); ctx.drawImage(img, 0, 0, w, h);
+  const image = ctx.getImageData(0, 0, w, h); const d = image.data;
+  const hist = new Array(256).fill(0);
+  for (let i = 0; i < d.length; i += 4) hist[Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2])]++;
+  const total = d.length / 4; let acc = 0, low = 0, high = 255; const cut = total * 0.01;
+  for (let i = 0; i < 256; i++) { acc += hist[i]; if (acc >= cut) { low = i; break; } }
+  acc = 0; for (let i = 255; i >= 0; i--) { acc += hist[i]; if (acc >= cut) { high = i; break; } }
+  const range = Math.max(1, high - low);
+  for (let i = 0; i < d.length; i += 4) {
+    for (let c = 0; c < 3; c++) {
+      let v = ((d[i + c] - low) / range) * 255;
+      v = 255 / (1 + Math.exp(-(v - 128) / 46));
+      d[i + c] = clamp(v, 0, 255);
+    }
+  }
+  ctx.putImageData(image, 0, 0);
+  return canvas.toDataURL("image/jpeg", 0.86);
+}
+function exportCsv() {
+  const rows = [["arquivo","decisao","score","nitidez","exposicao","estouro_%","flags","repetida_de"], ...state.items.map((it) => [it.name, it.decision, it.tech, it.sharpScore, it.exposureScore, it.highlightClip, it.flags.join("|"), it.duplicateOf || ""])];
+  const csv = rows.map((r) => r.map((c) => `"${String(c).replaceAll('"','""')}"`).join(",")).join("\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = "kordex-prep.csv"; a.click();
+}
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function round(v) { return Math.round(v * 10) / 10; }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+</script>
 </body>
 </html>
